@@ -75,4 +75,4 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
     - dalam auth-header : kita akan mendapatkan token dari localStorage setelah melakukan login
     - dalam authService : berfungsi menghubungkan API dari server untuk register, login, logout
     - dalam userService : berfungsi menghubungkan API dari server untuk menampilkan page sesuai dengan rolenya  
-2. 
+2. setup reduxnya, awali dari actions
