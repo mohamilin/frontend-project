@@ -68,3 +68,11 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `yarn build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+### DOCUMENTATION
+    ```html
+1. Buat file dalam folder service : auth-header, authService, userService
+    - dalam auth-header : kita akan mendapatkan token dari localStorage setelah melakukan login
+    - dalam authService : berfungsi menghubungkan API dari server untuk register, login, logout
+    - dalam userService : berfungsi menghubungkan API dari server untuk menampilkan page sesuai dengan rolenya  
+2. 
