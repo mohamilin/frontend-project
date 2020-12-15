@@ -1,4 +1,6 @@
 import React from 'react';
+import {Link } from "react-router-dom";
+
 import { makeStyles } from '@material-ui/core/styles';
 import { AppBar, Toolbar, IconButton, 
   Typography, Button , Badge, MenuItem, Menu} from '@material-ui/core';
@@ -17,6 +19,13 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     display: 'none',
+    [theme.breakpoints.up('sm')]: {
+      display: 'block',
+    },
+  },
+  title2: {
+    display: 'none',
+    marginRight: 20,
     [theme.breakpoints.up('sm')]: {
       display: 'block',
     },
@@ -78,6 +87,7 @@ export default function Header() {
 
   const mobileMenuId = 'primary-search-account-menu-mobile';
   const renderMobileMenu = (
+    
     <Menu
       anchorEl={mobileMoreAnchorEl}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
@@ -87,6 +97,7 @@ export default function Header() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
+      
       <MenuItem>
         <IconButton aria-label="show 4 new mails" color="inherit">
           <Badge badgeContent={4} color="secondary">
@@ -121,25 +132,20 @@ export default function Header() {
     <div className={classes.grow}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton
-            edge="start"
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="open drawer"
-          >
-            <MenuIcon />
-          </IconButton>
+        <Typography className={classes.title2} variant="h5" noWrap>
+            LOGO
+          </Typography>
           <Typography className={classes.title} variant="h6" noWrap>
-            My Project
+            PPTQ Assalam Riyadlul Jannah
           </Typography>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <Button color="inherit">Home</Button>
-            <Button color="inherit">User</Button>
-            <Button color="inherit">Moderator</Button>
-            <Button color="inherit">Admin</Button>
-            <Button color="inherit">Login</Button>
-            <Button color="inherit">Register</Button>
+            <Button component={Link} to='/'  color="inherit">Home</Button>
+            <Button component={Link} to='/user'  color="inherit">User</Button>
+            <Button component={Link} to='/mod'  color="inherit">Piket</Button>
+            <Button component={Link} to='/admin'  color="inherit">Admin</Button>
+            <Button component={Link} to='/login'  color="inherit">Login</Button>
+            <Button component={Link} to='/register'  color="inherit">Register</Button>
             <IconButton
               edge="end"
               aria-label="account of current user"
@@ -152,6 +158,7 @@ export default function Header() {
             </IconButton>
           </div>
           <div className={classes.sectionMobile}>
+       <p>Pondok Pesantren Tahfidzul Qur'an Assalam Riyadlul Jannah</p>
             <IconButton
               aria-label="show more"
               aria-controls={mobileMenuId}
@@ -164,7 +171,8 @@ export default function Header() {
           </div>
         </Toolbar>
       </AppBar>
-      {renderMobileMenu}
+      
+       {renderMobileMenu}
       {renderMenu}
     </div>
   );

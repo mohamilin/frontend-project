@@ -4,9 +4,6 @@ import React, { useState, useEffect } from 'react'
 // redux
 import UserService from "../service/userService";
 import Header from "../components/Header";
-import Register from "./Register";
-import Login from "./Login";
-
 
 
 function Homepage() {
@@ -20,7 +17,7 @@ function Homepage() {
     console.log("context", context.content)
 
     useEffect(() => {
-        UserService.getPublic().then(
+        UserService.getUser().then(
             response => {
                 setContext({
                     content: response.data
@@ -28,7 +25,7 @@ function Homepage() {
             },
             error => {
                 setContext({
-                    content: (error.response && error.response.data) || 
+                    content: (error.response && error.response.data && error.response.data.message) || 
                     error.message || error.toString()
                 });
             }
@@ -40,13 +37,12 @@ function Homepage() {
         <>
             <Header />
             <div>
-                <h2>Halaman Homepage</h2>
+                <h2>Halaman User</h2>
                 {/* <Register/> */}
                 {/* <Login/> */}
                 <div>
                     {context.content}
                 </div>
-
             </div>
         </>
     )

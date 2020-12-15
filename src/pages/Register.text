@@ -1,0 +1,160 @@
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+// validation
+import Form from "react-validation/build/form";
+import Input from "react-validation/build/input";
+import CheckButton from "react-validation/build/button"
+import { isEmail } from "validator";
+
+// material UI
+import {Alert} from "@material-ui/lab";
+
+import { getRegisterAction } from "../redux/actions/authAction";
+import { getSetMessage } from "../redux/actions/varTypes";
+
+// buat function untuk validation
+const required = (value) => {
+    if (!value) {
+        return (
+            <div>
+                <Alert severity="error">This field required !</Alert>
+            </div>
+        );
+    }
+};
+
+const email = (value) => {
+    if (!isEmail(value)) {
+        <div>
+            <Alert severity="error">This is not a valid email</Alert>
+        </div>;
+    }
+};
+
+const vUserName = (value) => {
+    if (value.length < 3 || value.length > 20) {
+        return (
+            <div>
+                <Alert severity="error">This username must be between 3 and 20 characters</Alert>
+            </div>
+        );
+    }
+};
+
+const vPassword = (value) => {
+    if (value.length < 3 || value.length > 40) {
+        return (
+            <div>
+                <Alert severity="error">This password must be between 6 and 40 characters</Alert>
+            </div>
+        );
+    }
+};
+
+function Register() {
+    const dispatch = useDispatch();
+    const message = useSelector((state) => state.message);
+    console.log("pesan", message);
+
+    useEffect(() => {
+        dispatch(getSetMessage());
+    });
+
+    const [register, setRegister] = useState({
+        username: "",
+        email: "",
+        password: "",
+        successfull: false
+    });
+
+    const handleChange = (e) => {
+        setRegister({
+            ...register,
+            [e.target.name]: e.target.value,
+        });
+    };
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        setRegister({ successfull: true });
+        form.validateAll();
+        if (checkBtn.context._errors.length === 0) {
+            dispatch(
+                getRegisterAction(register.username, register.email, register.password),
+            )
+                .then(() => {
+                    setRegister({ successfull: true })
+                })
+                .catch(() => {
+                    setRegister({ successfull: false })
+                })
+        }
+    }
+
+    console.log(register);
+    return (
+        <>
+            <h2>Halaman Register</h2>
+            <div>
+                <Form onSubmit={handleSubmit}
+                ref={(x) => {form = x}}          
+                 >
+                    {!register.successfull && (<div>
+
+                       <div>
+                       <label>username</label>
+                        <Input
+                            type="text"
+                            name="username"
+                            value={register.username}
+                            onChange={handleChange}
+                            validations={[ required, vUserName ]}
+                            placeholder="username"
+                        />{" "}
+                       </div>
+                        <br />
+                       <div>
+                       <label>Email</label>
+                        <Input
+                            type="email"
+                            name="email"
+                            value={register.email}
+                            onChange={handleChange}
+                            validations={[required, email]}
+                            placeholder="email"
+                        />{" "}
+                       </div>
+                        <br />
+                       <div>
+                       <label>password</label>
+                        <Input
+                            type="password"
+                            name="password"
+                            value={register.password}
+                            onChange={handleChange}
+                            validations={[required, vPassword]}
+                            placeholder="password"
+                        />{" "}
+                       </div>
+                        <br />
+                        <button type="submit">Kirim</button>
+                    </div>
+                    )}
+
+                    {message && (
+                        <div>
+                            {message}
+                        </div>
+                    )}
+
+                    <CheckButton ref={ c => {checkBtn = c; 
+                    }} />
+
+                </Form>
+            </div>
+        </>
+    );
+}
+
+export default Register;
