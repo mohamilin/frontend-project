@@ -1,10 +1,17 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
+import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import {Link } from "react-router-dom";
 
+// imoirt redux
+import {getLogoutAction} from "../redux/actions/authAction";
+import {getClearMessage} from "../redux/actions/varTypes";
+import {history} from "../helper/history";
+
+// import material UI
 import { makeStyles } from '@material-ui/core/styles';
 import { AppBar, Toolbar, IconButton, 
   Typography, Button , Badge, MenuItem, Menu} from '@material-ui/core';
-
 import {AccountCircle} from '@material-ui/icons';
 import MenuIcon from '@material-ui/icons/Menu';
 import MailIcon from '@material-ui/icons/Mail';
@@ -45,17 +52,40 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Header() {
+  const dispatch = useDispatch();
+  const history= useHistory();
+
+  const showUser = useSelector((state)=> state.authReducer.user)
+  console.log('showuser', showUser)
+  const [navbar, setNavbar] = useState({
+    showModerator : false,
+    showAdmin : false,
+    showMember: true,
+    currentUser : undefined
+  })
+  console.log('navbar', navbar)
+  useEffect(() => {
+    if(showUser){
+      setNavbar({
+        currentUser: showUser,
+        showModerator: showUser.roles.includes("ROLE_MODERATOR"),
+        showAdmin: showUser.roles.includes('ROLE_ADMIN'),
+        showMember: showUser.roles.includes("ROLE_USER")
+      })
+     
+    }
+    // eslint-disable-next-line
+  },[dispatch, showUser])
+
+
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
   };
@@ -63,6 +93,15 @@ export default function Header() {
   const handleMenuClose = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
+    
+  };
+
+  const handleClick = () => {
+    dispatch(getLogoutAction());
+    localStorage.removeItem("token");
+    history.push("/")
+
+    
   };
 
   const handleMobileMenuOpen = (event) => {
@@ -80,8 +119,8 @@ export default function Header() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
+      <MenuItem >Profile</MenuItem>
+      <MenuItem onClick={handleClick}>Logout</MenuItem>
     </Menu>
   );
 
@@ -141,12 +180,13 @@ export default function Header() {
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             <Button component={Link} to='/'  color="inherit">Home</Button>
-            <Button component={Link} to='/user'  color="inherit">User</Button>
-            <Button component={Link} to='/mod'  color="inherit">Piket</Button>
-            <Button component={Link} to='/admin'  color="inherit">Admin</Button>
-            <Button component={Link} to='/login'  color="inherit">Login</Button>
-            <Button component={Link} to='/register'  color="inherit">Register</Button>
-            <IconButton
+            {navbar.showModerator && (<Button component={Link} to='/mod'  color="inherit">Piket</Button>)}
+            {navbar.showAdmin && (<Button component={Link} to='/admin'  color="inherit">Admin</Button>)}
+            {showUser && (<Button component={Link} to='/user'  color="inherit">Guru</Button>) }
+           {!showUser ? (
+             
+              <Button component={Link} to='/login'  color="inherit">Login</Button>
+            ) : ( <IconButton
               edge="end"
               aria-label="account of current user"
               aria-controls={menuId}
@@ -155,7 +195,23 @@ export default function Header() {
               color="inherit"
             >
               <AccountCircle />
-            </IconButton>
+            </IconButton>)
+              
+            }
+           
+           {/* {localStorage.getItem("token") && (
+             <IconButton
+             edge="end"
+             aria-label="account of current user"
+             aria-controls={menuId}
+             aria-haspopup="true"
+             onClick={handleProfileMenuOpen}
+             color="inherit"
+           >
+             <AccountCircle />
+           </IconButton>
+            */}
+           {/* )} */}
           </div>
           <div className={classes.sectionMobile}>
        <p>Pondok Pesantren Tahfidzul Qur'an Assalam Riyadlul Jannah</p>
