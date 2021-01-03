@@ -1,21 +1,30 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 // imoirt redux
-import {getLogoutAction} from "../redux/actions/authAction";
-import {getClearMessage} from "../redux/actions/varTypes";
-import {history} from "../helper/history";
+import { getLogoutAction } from "../redux/actions/authAction";
 
 // import material UI
-import { makeStyles } from '@material-ui/core/styles';
-import { AppBar, Toolbar, IconButton, 
-  Typography, Button , Badge, MenuItem, Menu} from '@material-ui/core';
-import {AccountCircle} from '@material-ui/icons';
-import MenuIcon from '@material-ui/icons/Menu';
-import MailIcon from '@material-ui/icons/Mail';
-import NotificationsIcon from '@material-ui/icons/Notifications';
+import { makeStyles } from "@material-ui/core/styles";
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
+  Button,
+  Badge,
+  MenuItem,
+  Menu,
+  Popper,
+  Grow,
+  Paper, MenuList, ClickAwayListener
+} from "@material-ui/core";
+import { AccountCircle } from "@material-ui/icons";
+import MenuIcon from "@material-ui/icons/Menu";
+import MailIcon from "@material-ui/icons/Mail";
+import NotificationsIcon from "@material-ui/icons/Notifications";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -25,58 +34,56 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
   },
   title: {
-    display: 'none',
-    [theme.breakpoints.up('sm')]: {
-      display: 'block',
+    display: "none",
+    [theme.breakpoints.up("sm")]: {
+      display: "block",
     },
   },
   title2: {
-    display: 'none',
+    display: "none",
     marginRight: 20,
-    [theme.breakpoints.up('sm')]: {
-      display: 'block',
+    [theme.breakpoints.up("sm")]: {
+      display: "block",
     },
   },
   sectionDesktop: {
-    display: 'none',
-    [theme.breakpoints.up('md')]: {
-      display: 'flex',
+    display: "none",
+    [theme.breakpoints.up("md")]: {
+      display: "flex",
     },
   },
   sectionMobile: {
-    display: 'flex',
-    [theme.breakpoints.up('md')]: {
-      display: 'none',
+    display: "flex",
+    [theme.breakpoints.up("md")]: {
+      display: "none",
     },
   },
 }));
 
 export default function Header() {
   const dispatch = useDispatch();
-  const history= useHistory();
+  const history = useHistory();
 
-  const showUser = useSelector((state)=> state.authReducer.user)
-  console.log('showuser', showUser)
+  const showUser = useSelector((state) => state.authReducer.user);
+  console.log("showuser", showUser);
   const [navbar, setNavbar] = useState({
-    showModerator : false,
-    showAdmin : false,
+    showModerator: false,
+    showAdmin: false,
     showMember: true,
-    currentUser : undefined
-  })
-  console.log('navbar', navbar)
+    currentUser: undefined,
+  });
+  console.log("showUser", showUser);
   useEffect(() => {
-    if(showUser){
+    if (showUser) {
       setNavbar({
         currentUser: showUser,
         showModerator: showUser.roles.includes("ROLE_MODERATOR"),
-        showAdmin: showUser.roles.includes('ROLE_ADMIN'),
-        showMember: showUser.roles.includes("ROLE_USER")
-      })
-     
+        showAdmin: showUser.roles.includes("ROLE_ADMIN"),
+        showMember: showUser.roles.includes("ROLE_USER"),
+      });
     }
     // eslint-disable-next-line
-  },[dispatch, showUser])
-
+  }, [dispatch, showUser]);
 
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -93,50 +100,45 @@ export default function Header() {
   const handleMenuClose = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
-    
   };
 
   const handleClick = () => {
     dispatch(getLogoutAction());
     localStorage.removeItem("token");
-    history.push("/")
-
-    
+    history.push("/");
   };
 
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
-  const menuId = 'primary-search-account-menu';
+  const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
       id={menuId}
       keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      transformOrigin={{ vertical: "top", horizontal: "right" }}
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem >Profile</MenuItem>
+      <MenuItem>Profile</MenuItem>
       <MenuItem onClick={handleClick}>Logout</MenuItem>
     </Menu>
   );
 
-  const mobileMenuId = 'primary-search-account-menu-mobile';
+  const mobileMenuId = "primary-search-account-menu-mobile";
   const renderMobileMenu = (
-    
     <Menu
       anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
       id={mobileMenuId}
       keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      transformOrigin={{ vertical: "top", horizontal: "right" }}
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      
       <MenuItem>
         <IconButton aria-label="show 4 new mails" color="inherit">
           <Badge badgeContent={4} color="secondary">
@@ -167,39 +169,92 @@ export default function Header() {
     </Menu>
   );
 
+  // menu profile
+  const [open, setOpen] = React.useState(false);
+  const anchorRef = React.useRef(null);
+
+  const handleToggle = () => {
+    setOpen((prevOpen) => !prevOpen);
+  };
+
+  const handleClose = (event) => {
+    if (anchorRef.current && anchorRef.current.contains(event.target)) {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  function handleListKeyDown(event) {
+    if (event.key === 'Tab') {
+      event.preventDefault();
+      setOpen(false);
+    }
+  }
+
   return (
     <div className={classes.grow}>
       <AppBar position="static">
         <Toolbar>
-        <Typography className={classes.title2} variant="h5" noWrap>
-            LOGO
-          </Typography>
           <Typography className={classes.title} variant="h6" noWrap>
             PPTQ Assalam Riyadlul Jannah
           </Typography>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <Button component={Link} to='/'  color="inherit">Home</Button>
-            {navbar.showModerator && (<Button component={Link} to='/mod'  color="inherit">Piket</Button>)}
-            {navbar.showAdmin && (<Button component={Link} to='/admin'  color="inherit">Admin</Button>)}
-            {showUser && (<Button component={Link} to='/user'  color="inherit">Guru</Button>) }
-           {!showUser ? (
-             
-              <Button component={Link} to='/login'  color="inherit">Login</Button>
-            ) : ( <IconButton
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>)
-              
-            }
-           
-           {/* {localStorage.getItem("token") && (
+            <Button component={Link} to="/" color="inherit">
+              Home
+            </Button>
+            {navbar.showModerator && showUser && (
+              <Button component={Link} to="/mod" color="inherit">
+                Piket
+              </Button>
+            )}
+            {navbar.showAdmin && showUser && (
+              <Button component={Link} to="/admin" color="inherit">
+                Admin
+              </Button>
+            )}
+            {showUser && (
+              <Button component={Link} to="/user" color="inherit">
+                Guru
+              </Button>
+            )}
+            {!showUser ? (
+              <Button component={Link} to="/login" color="inherit">
+                Login
+              </Button>
+            ) : (
+                <div>
+                  <Button
+                    ref={anchorRef}
+                    aria-controls={open ? "menu-list-grow" : undefined}
+                    aria-haspopup="true"
+                    variant="contained" color="secondary"
+                    onClick={handleToggle}
+                  >
+                    {showUser.username}
+                </Button>
+                  <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
+                    {({ TransitionProps, placement }) => (
+                      <Grow
+                        {...TransitionProps}
+                        style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+                      >
+                        <Paper>
+                          <ClickAwayListener onClickAway={handleClose} >
+                            <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
+                              <MenuItem component={Link} to="/profile" >Profile</MenuItem>
+                              <MenuItem onClick={handleClick} >Logout</MenuItem>
+                            </MenuList>
+                          </ClickAwayListener>
+                        </Paper>
+                      </Grow>
+                    )}
+                  </Popper>
+                </div>
+              )}
+
+            {/* {localStorage.getItem("token") && (
              <IconButton
              edge="end"
              aria-label="account of current user"
@@ -211,10 +266,10 @@ export default function Header() {
              <AccountCircle />
            </IconButton>
             */}
-           {/* )} */}
+            {/* )} */}
           </div>
           <div className={classes.sectionMobile}>
-       <p>Pondok Pesantren Tahfidzul Qur'an Assalam Riyadlul Jannah</p>
+            <p>Pondok Pesantren Tahfidzul Qur'an Assalam Riyadlul Jannah</p>
             <IconButton
               aria-label="show more"
               aria-controls={mobileMenuId}
@@ -227,8 +282,8 @@ export default function Header() {
           </div>
         </Toolbar>
       </AppBar>
-      
-       {renderMobileMenu}
+
+      {renderMobileMenu}
       {renderMenu}
     </div>
   );

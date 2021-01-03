@@ -4,19 +4,12 @@ import React, { useState, useEffect } from 'react'
 // redux
 import UserService from "../service/userService";
 import Header from "../components/Header";
-import Register from "./Register";
-import Login from "./Login";
-
 
 
 function Homepage() {
-
-    
-
     const [context, setContext] = useState({
         content: ""
     })
-
     console.log("context", context.content)
 
     useEffect(() => {
@@ -33,6 +26,7 @@ function Homepage() {
                 });
             }
         )
+    // eslint-disable-next-line
     },[UserService])
 
 
@@ -40,7 +34,7 @@ function Homepage() {
         <>
             <Header />
             <div>
-                <h2>Halaman Homepage</h2>
+                <h2>Single Sign On (SSO) <br/>  PPTQ Assalam Riyadlul Jannah</h2>
                 {/* <Register/> */}
                 {/* <Login/> */}
                 <div>

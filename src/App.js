@@ -7,6 +7,9 @@ import PageUser from "./pages/PageUser";
 import PageModerator from "./pages/PageModerator";
 import Login from "./pages/Login";
 import Register from  "./pages/Register";
+import Profile from "./pages/Profile";
+import Absensi from "./pages/Absensi";
+import PageTest from './pages/PageTest';
 
 function App() {
   return (
@@ -18,10 +21,13 @@ function App() {
          <Route exact path="/user" component={PageUser}/>
          <Route exact path="/mod" component={PageModerator}/>
          <Route exact path="/admin" component={PageAdmin}/>
-         <Route exact path="/register" component={Register}/>
+         <Route exact path="/profile" component={Profile}/>
+         <Route exact path="/absensi" component={Absensi}/>
          <Route exact path="/login" component={Login}/>
+         <Route exact path="/register" component={Register}/>
        </Switch>
      </Router>
+     <PageTest/>
    </div>
     </>
     // <div className="App">

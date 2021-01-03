@@ -1,7 +1,8 @@
 import axios from 'axios';
 import authHeader from "./auth-header";
 
-const API_PAGE = "https://server-projects.herokuapp.com/api/"
+const API_PAGE = "https://server-siakad.herokuapp.com/api/"
+// const API_PAGE = "http://localhost:5000/api/"
 
 class UserService {
     getPublic() {
@@ -21,4 +22,4 @@ class UserService {
     }
 }
 
-export default new UserService;
+export default new UserService();

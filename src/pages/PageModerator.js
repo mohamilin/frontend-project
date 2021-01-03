@@ -14,7 +14,7 @@ function Homepage() {
         content: ""
     })
 
-    console.log("context", context.content)
+    console.log("context :", context.content)
 
     useEffect(() => {
         UserService.getMod().then(

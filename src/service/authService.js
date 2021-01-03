@@ -1,7 +1,9 @@
 // import axios dan buat variabel untuk url server
 import axios from "axios";
 
-const API_SERVER = "https://server-projects.herokuapp.com/api/";
+const API_SERVER = "https://server-siakad.herokuapp.com/api/log/";
+
+// const API_SERVER = "http://localhost:5000/api/"; 
 
 // kita buat class AuthService
 
